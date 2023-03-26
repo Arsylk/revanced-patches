@@ -10,13 +10,11 @@ import app.revanced.patches.shared.mapping.misc.patch.ResourceMappingPatch
 import app.revanced.patches.shared.settings.preference.impl.*
 import app.revanced.patches.youtube.ad.general.annotation.GeneralAdsCompatibility
 import app.revanced.patches.youtube.misc.litho.filter.patch.LithoFilterPatch
-import app.revanced.patches.youtube.misc.manifest.patch.FixLocaleConfigErrorPatch
 import app.revanced.patches.youtube.misc.settings.bytecode.patch.SettingsPatch
 import app.revanced.patches.youtube.misc.settings.bytecode.patch.SettingsPatch.PreferenceScreen
 
 @DependsOn(
     dependencies = [
-        FixLocaleConfigErrorPatch::class,
         LithoFilterPatch::class,
         SettingsPatch::class,
         ResourceMappingPatch::class
@@ -88,6 +86,20 @@ class GeneralAdsResourcePatch : ResourcePatch {
                 true,
                 StringResource("revanced_adremover_compact_banner_enabled_summary_on", "Compact banners are hidden"),
                 StringResource("revanced_adremover_compact_banner_enabled_summary_off", "Compact banners are shown")
+            ),
+            SwitchPreference(
+                "revanced_adremover_view_products",
+                StringResource("revanced_adremover_view_products_title", "Hide banner to view products"),
+                true,
+                StringResource("revanced_adremover_view_products_summary_on", "Banner is hidden"),
+                StringResource("revanced_adremover_view_products_summary_off", "Banner is shown")
+            ),
+            SwitchPreference(
+                "revanced_adremover_web_search_result",
+                StringResource("revanced_adremover_web_search_result_panel_title", "Hide web search results"),
+                true,
+                StringResource("revanced_adremover_web_search_result_summary_on", "Web search results are hidden"),
+                StringResource("revanced_adremover_web_search_result_summary_off", "Web search results are shown")
             ),
             SwitchPreference(
                 "revanced_adremover_movie",
@@ -173,6 +185,34 @@ class GeneralAdsResourcePatch : ResourcePatch {
                 StringResource("revanced_adremover_medical_panel_enabled_summary_on", "Medical panels are hidden"),
                 StringResource("revanced_adremover_medical_panel_enabled_summary_off", "Medical panels are shown")
             ),
+            SwitchPreference(
+                "revanced_hide_channel_bar",
+                StringResource("revanced_hide_channel_bar_title", "Hide channel bar"),
+                false,
+                StringResource("revanced_hide_channel_bar_summary_on", "Channel bar is hidden"),
+                StringResource("revanced_hide_channel_bar_summary_off", "Channel bar is shown")
+            ),
+            SwitchPreference(
+                "revanced_hide_quick_actions",
+                StringResource("revanced_hide_quick_actions_title", "Hide quick actions in fullscreen"),
+                false,
+                StringResource("revanced_hide_quick_actions_summary_on", "Quick actions are hidden"),
+                StringResource("revanced_hide_quick_actions_summary_off", "Quick actions are shown")
+            ),
+            SwitchPreference(
+                "revanced_hide_related_videos",
+                StringResource("revanced_hide_related_videos_title", "Hide related videos in quick actions"),
+                false,
+                StringResource("revanced_hide_related_videos_summary_on", "Related videos are hidden"),
+                StringResource("revanced_hide_related_videos_summary_off", "Related videos are shown")
+            ),
+            SwitchPreference(
+                "revanced_hide_image_shelf",
+                StringResource("revanced_hide_image_shelf", "Hide image shelf in search results"),
+                true,
+                StringResource("revanced_hide_image_shelf_summary_on", "Image shelf is hidden"),
+                StringResource("revanced_hide_image_shelf_summary_off", "Image shelf is shown")
+            )
         )
 
         PreferenceScreen.ADS.addPreferences(
@@ -196,13 +236,6 @@ class GeneralAdsResourcePatch : ResourcePatch {
                 true,
                 StringResource("revanced_adremover_paid_content_enabled_summary_on", "Paid content is hidden"),
                 StringResource("revanced_adremover_paid_content_enabled_summary_off", "Paid content is shown")
-            ),
-            SwitchPreference(
-                "revanced_adremover_hide_suggestions",
-                StringResource("revanced_adremover_hide_suggestions_enabled_title", "Hide suggestions"),
-                true,
-                StringResource("revanced_adremover_hide_suggestions_enabled_summary_on", "Suggestions are hidden"),
-                StringResource("revanced_adremover_hide_suggestions_enabled_summary_off", "Suggestions are shown")
             ),
             SwitchPreference(
                 "revanced_adremover_hide_latest_posts",
