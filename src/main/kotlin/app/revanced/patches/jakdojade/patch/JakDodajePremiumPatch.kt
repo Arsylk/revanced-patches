@@ -10,18 +10,19 @@ import app.revanced.patcher.patch.BytecodePatch
 import app.revanced.patcher.patch.PatchResult
 import app.revanced.patcher.patch.PatchResultSuccess
 import app.revanced.patcher.patch.annotations.Patch
+import app.revanced.patcher.patch.annotations.RequiresIntegrations
 import app.revanced.patches.jakdojade.annotations.JakDojadeCompatibility
 import app.revanced.patches.jakdojade.fingerprints.GooglePurchaseConstructorFingerprint
 import app.revanced.patches.jakdojade.fingerprints.PremiumManagerConstructorFingerprint
 import app.revanced.patches.jakdojade.fingerprints.PremiumManagerIsPremiumFingerprint
 import app.revanced.patches.jakdojade.fingerprints.SharedPrefsFingerprint
-import app.revanced.patches.youtube.layout.pivotbar.utils.InjectionUtils.injectHook
 import java.util.Date
 
 @Patch
 @Name("jakdojade-premium")
 @Description("Unlock premium features in JakDojade")
 @JakDojadeCompatibility
+@RequiresIntegrations
 @Version("0.0.1")
 class JakDodajePremiumPatch : BytecodePatch(
     listOf(
