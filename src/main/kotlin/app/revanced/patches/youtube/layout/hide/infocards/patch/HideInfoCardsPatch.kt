@@ -4,8 +4,9 @@ import app.revanced.patcher.annotation.Description
 import app.revanced.patcher.annotation.Name
 import app.revanced.patcher.annotation.Version
 import app.revanced.patcher.data.BytecodeContext
-import app.revanced.patcher.extensions.addInstructions
-import app.revanced.patcher.extensions.instruction
+import app.revanced.patcher.extensions.InstructionExtensions.addInstruction
+import app.revanced.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
+import app.revanced.patcher.extensions.InstructionExtensions.getInstruction
 import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint.Companion.resolve
 import app.revanced.patcher.patch.BytecodePatch
 import app.revanced.patcher.patch.PatchResult
@@ -20,7 +21,8 @@ import app.revanced.patches.youtube.layout.hide.infocards.fingerprints.Infocards
 import app.revanced.patches.youtube.layout.hide.infocards.resource.patch.HideInfocardsResourcePatch
 import app.revanced.patches.youtube.misc.integrations.patch.IntegrationsPatch
 import org.jf.dexlib2.Opcode
-import org.jf.dexlib2.builder.instruction.BuilderInstruction35c
+import org.jf.dexlib2.iface.instruction.FiveRegisterInstruction
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction
 
 @Patch
 @DependsOn([IntegrationsPatch::class, HideInfocardsResourcePatch::class])
@@ -35,38 +37,36 @@ class HideInfoCardsPatch : BytecodePatch(
     )
 ) {
     override fun execute(context: BytecodeContext): PatchResult {
-        with(InfocardsIncognitoFingerprint.also {
+       InfocardsIncognitoFingerprint.also {
             it.resolve(context, InfocardsIncognitoParentFingerprint.result!!.classDef)
-        }.result!!.mutableMethod) {
+        }.result!!.mutableMethod.apply {
             val invokeInstructionIndex = implementation!!.instructions.indexOfFirst {
                 it.opcode.ordinal == Opcode.INVOKE_VIRTUAL.ordinal &&
-                        ((it as? BuilderInstruction35c)?.reference.toString() ==
-                                "Landroid/view/View;->setVisibility(I)V")
+                        ((it as ReferenceInstruction).reference.toString() == "Landroid/view/View;->setVisibility(I)V")
             }
 
-            addInstructions(
-                invokeInstructionIndex,
-                "invoke-static {v${(instruction(invokeInstructionIndex) as? BuilderInstruction35c)?.registerC}}," +
-                        " Lapp/revanced/integrations/patches/HideInfoCardsPatch;->hideInfoCardsIncognito(Landroid/view/View;)V"
-            )
+           addInstruction(
+               invokeInstructionIndex,
+               "invoke-static {v${getInstruction<FiveRegisterInstruction>(invokeInstructionIndex).registerC}}," +
+                       " Lapp/revanced/integrations/patches/HideInfoCardsPatch;->hideInfoCardsIncognito(Landroid/view/View;)V"
+           )
         }
 
         with(InfocardsMethodCallFingerprint.result!!) {
-            val hideInfocardsCallMethod = mutableMethod
+            val hideInfoCardsCallMethod = mutableMethod
 
             val invokeInterfaceIndex = scanResult.patternScanResult!!.endIndex
-            val toggleRegister = hideInfocardsCallMethod.implementation!!.registerCount - 1
+            val toggleRegister = hideInfoCardsCallMethod.implementation!!.registerCount - 1
 
-            hideInfocardsCallMethod.addInstructions(
-                invokeInterfaceIndex, """
+            hideInfoCardsCallMethod.addInstructionsWithLabels(
+                invokeInterfaceIndex,
+                """
                     invoke-static {}, Lapp/revanced/integrations/patches/HideInfoCardsPatch;->hideInfoCardsMethodCall()Z
                     move-result v$toggleRegister
                     if-nez v$toggleRegister, :hide_info_cards
                 """,
-                listOf(
-                    ExternalLabel(
-                        "hide_info_cards", hideInfocardsCallMethod.instruction(invokeInterfaceIndex + 1)
-                    )
+                ExternalLabel(
+                    "hide_info_cards", hideInfoCardsCallMethod.getInstruction(invokeInterfaceIndex + 1)
                 )
             )
         }

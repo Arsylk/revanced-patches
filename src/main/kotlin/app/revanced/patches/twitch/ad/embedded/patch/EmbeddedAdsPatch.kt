@@ -5,7 +5,7 @@ import app.revanced.patcher.annotation.Name
 import app.revanced.patcher.annotation.Version
 import app.revanced.patcher.data.BytecodeContext
 import app.revanced.patcher.extensions.MethodFingerprintExtensions.name
-import app.revanced.patcher.extensions.addInstructions
+import app.revanced.patcher.extensions.InstructionExtensions.addInstructions
 import app.revanced.patcher.patch.BytecodePatch
 import app.revanced.patcher.patch.PatchResult
 import app.revanced.patcher.patch.PatchResultError
@@ -24,7 +24,7 @@ import app.revanced.patches.twitch.misc.settings.bytecode.patch.SettingsPatch
 @Patch
 @DependsOn([VideoAdsPatch::class, IntegrationsPatch::class, SettingsPatch::class])
 @Name("block-embedded-ads")
-@Description("Blocks embedded steam ads using services like TTV.lol or PurpleAdBlocker.")
+@Description("Blocks embedded stream ads using services like TTV.lol or PurpleAdBlocker.")
 @EmbeddedAdsCompatibility
 @Version("0.0.1")
 class EmbeddedAdsPatch : BytecodePatch(
@@ -66,7 +66,7 @@ class EmbeddedAdsPatch : BytecodePatch(
                         StringResource("key_revanced_proxy_purpleadblock", "purpleadblock")
                     )
                 ),
-                "ttv-lol"
+                default = "ttv-lol"
             )
         )
 

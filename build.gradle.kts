@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.7.0"
+    kotlin("jvm") version "1.8.10"
 }
 
 group = "app.revanced"
@@ -17,13 +17,30 @@ repositories {
             password = githubPassword
         }
     }
+    // Required for FlexVer-Java
+    maven {
+        url = uri("https://repo.sleeping.town")
+        content {
+            includeGroup("com.unascribed")
+        }
+    }
 }
 
 dependencies {
-    implementation("app.revanced:revanced-patcher:7.0.0")
+    implementation("app.revanced:revanced-patcher:11.0.0")
     implementation("app.revanced:multidexlib2:2.5.3-a3836654")
     // Required for meta
     implementation("com.google.code.gson:gson:2.10.1")
+    // Required for FlexVer-Java
+    implementation("com.unascribed:flexver-java:1.0.2")
+
+    // A dependency to the Android library unfortunately fails the build,
+    // which is why this is required for the patch change-oauth-client-id
+    compileOnly(project("dummy"))
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 tasks {

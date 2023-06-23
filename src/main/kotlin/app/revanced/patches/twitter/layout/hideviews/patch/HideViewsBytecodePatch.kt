@@ -1,8 +1,8 @@
 package app.revanced.patches.twitter.layout.hideviews.patch
 
 import app.revanced.patcher.data.BytecodeContext
-import app.revanced.patcher.extensions.removeInstruction
-import app.revanced.patcher.extensions.removeInstructions
+import app.revanced.patcher.extensions.InstructionExtensions.removeInstruction
+import app.revanced.patcher.extensions.InstructionExtensions.removeInstructions
 import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint
 import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint.Companion.resolve
 import app.revanced.patcher.fingerprint.method.impl.MethodFingerprintResult
@@ -61,7 +61,7 @@ class HideViewsBytecodePatch : BytecodePatch(
             TweetStatsContainerConstructorFingerprint,
             returnFingerprint
         ) { patternScanResult, method ->
-            method.removeInstructions(patternScanResult.endIndex - 3, 2)
+            method.removeInstructions(patternScanResult.endIndex - 3, 3)
         }
     }
 
@@ -80,13 +80,13 @@ class HideViewsBytecodePatch : BytecodePatch(
             TweetStatsContainerWrapperConstructorFingerprint,
             wrapperReturnFingerprint
         ) { patternScanResult, method ->
-            method.removeInstructions(patternScanResult.startIndex - 4, 3)
+            method.removeInstructions(patternScanResult.startIndex - 4, 4)
         }
     }
 
     private fun removeViewDelegateBinderSubscription() {
         transformMethod(TweetStatsViewDelegateBinderFingerprint) { result, method ->
-            method.removeInstructions(result.scanResult.patternScanResult!!.startIndex - 4, 9)
+            method.removeInstructions(result.scanResult.patternScanResult!!.startIndex - 4, 10)
         }
     }
 

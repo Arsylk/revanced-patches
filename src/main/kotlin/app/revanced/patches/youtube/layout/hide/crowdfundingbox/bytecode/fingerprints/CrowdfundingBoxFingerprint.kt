@@ -7,14 +7,11 @@ import org.jf.dexlib2.iface.instruction.WideLiteralInstruction
 
 object CrowdfundingBoxFingerprint : MethodFingerprint(
     opcodes = listOf(
-        Opcode.CONST_4,
-        Opcode.CONST,
         Opcode.INVOKE_VIRTUAL,
         Opcode.MOVE_RESULT_OBJECT,
         Opcode.IPUT_OBJECT,
-        Opcode.CONST,
     ),
-    customFingerprint = { methodDef ->
+    customFingerprint = { methodDef, _ ->
         methodDef.implementation?.instructions?.any { instruction ->
             instruction.opcode.ordinal == Opcode.CONST.ordinal &&
                     (instruction as? WideLiteralInstruction)?.wideLiteral == CrowdfundingBoxResourcePatch.crowdfundingBoxId

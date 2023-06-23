@@ -6,10 +6,10 @@ import org.jf.dexlib2.AccessFlags
 import org.jf.dexlib2.Opcode
 
 object KidsMinimizedPlaybackPolicyControllerFingerprint : MethodFingerprint(
-    "V",
-    AccessFlags.PUBLIC or AccessFlags.FINAL,
-    listOf("I", "L", "L"),
-    listOf(
+    returnType = "V",
+    accessFlags = AccessFlags.PUBLIC or AccessFlags.FINAL,
+    parameters =  listOf("I", "L", "L"),
+    opcodes = listOf(
         Opcode.IF_EQZ,
         Opcode.SGET_OBJECT,
         Opcode.IF_NE,
@@ -19,5 +19,7 @@ object KidsMinimizedPlaybackPolicyControllerFingerprint : MethodFingerprint(
         Opcode.IGET,
         Opcode.INVOKE_STATIC
     ),
-    customFingerprint = { it.definingClass.endsWith("MinimizedPlaybackPolicyController;") }
+    customFingerprint = { methodDef, _ ->
+        methodDef.definingClass.endsWith("MinimizedPlaybackPolicyController;")
+    }
 )
