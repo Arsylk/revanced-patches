@@ -8,7 +8,7 @@ import org.jf.dexlib2.iface.reference.StringReference
 object FirebaseRemoteGetValueFingerprint : MethodFingerprint(
     returnType = "Ljava/lang/Boolean;",
     parameters = listOf("Ljava/lang/String;"),
-    customFingerprint = fingerprint@{ methodDef ->
+    customFingerprint = fingerprint@{ methodDef, _ ->
         if (!methodDef.definingClass.startsWith("Lcom/google/android/gms/measurement/internal"))
             return@fingerprint false
         val impl = methodDef.implementation ?: return@fingerprint false

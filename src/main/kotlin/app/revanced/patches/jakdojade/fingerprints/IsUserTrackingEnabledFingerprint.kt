@@ -5,7 +5,7 @@ import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint
 object IsUserTrackingEnabledFingerprint : MethodFingerprint(
     returnType = "Z",
     parameters = emptyList(),
-    customFingerprint = { methodDef ->
+    customFingerprint = { methodDef, _ ->
         methodDef.definingClass =="Lcom/gemius/sdk/Config;"
                 && methodDef.name == "isUserTrackingEnabled"
     }

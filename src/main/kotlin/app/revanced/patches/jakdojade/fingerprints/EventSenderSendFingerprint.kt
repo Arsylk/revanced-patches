@@ -13,7 +13,7 @@ object EventSenderSendFingerprint : MethodFingerprint(
         "Ljava/lang/Float;",
         "Landroid/os/Bundle;"
     ),
-    customFingerprint = { methodDef ->
+    customFingerprint = { methodDef, _ ->
         methodDef.implementation?.instructions?.any { inst ->
             inst.opcode == Opcode.NEW_INSTANCE &&
                     (inst as Instruction21c).reference.toString() ==

@@ -11,7 +11,7 @@ class MediaDetectorRecyclerViewFingerprint(private val layoutId: Long = -1) : Me
         Opcode.CONST,
         Opcode.CONST_4,
     ),
-    customFingerprint = fingerprint@{ methodDef ->
+    customFingerprint = fingerprint@{ methodDef, _ ->
         val instructions: Iterable<Instruction> = methodDef.implementation?.instructions
             ?: return@fingerprint false
 

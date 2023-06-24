@@ -5,12 +5,13 @@ import org.jf.dexlib2.AccessFlags
 import org.jf.dexlib2.dexbacked.instruction.DexBackedInstruction35c
 
 object SharedPrefsFingerprint : MethodFingerprint(
-    access = AccessFlags.PUBLIC.value,
+    accessFlags = AccessFlags.PUBLIC.value,
     parameters = listOf(),
     strings = listOf("marker-options"),
-    customFingerprint = { methodDef ->
+    customFingerprint = { methodDef, _ ->
         methodDef.implementation?.instructions?.any {
-            (it as? DexBackedInstruction35c)?.reference?.toString()== "Lcom/google/gson/Gson;->fromJson(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"
+            // TODO BAD PLZ FIX
+            (it as? DexBackedInstruction35c)?.reference?.toString()?.contains("(Ljava/lang/Class;)") == true
         } == true
     }
 )

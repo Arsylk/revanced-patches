@@ -6,9 +6,9 @@ import org.jf.dexlib2.Opcode
 
 object PremiumManagerIsPremiumFingerprint : MethodFingerprint(
     returnType = "Z",
-    access = AccessFlags.PUBLIC.value,
+    accessFlags = AccessFlags.PUBLIC.value,
     parameters = listOf(),
-    customFingerprint = { methodDef ->
+    customFingerprint = { methodDef, _ ->
         val int = methodDef.implementation!!.instructions
         int.count { it.opcode == Opcode.IGET_OBJECT } == 3 &&
                 int.count { it.opcode == Opcode.IF_EQZ } == 2 &&

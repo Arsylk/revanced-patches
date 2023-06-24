@@ -9,9 +9,9 @@ import org.jf.dexlib2.iface.reference.StringReference
 
 object RootDetectorFingerprint : MethodFingerprint(
     returnType = "V",
-    access = AccessFlags.PUBLIC or AccessFlags.STATIC or AccessFlags.CONSTRUCTOR,
+    accessFlags = AccessFlags.PUBLIC or AccessFlags.STATIC or AccessFlags.CONSTRUCTOR,
     parameters = listOf(),
-    customFingerprint = customFingerprint@{ methodDef ->
+    customFingerprint = customFingerprint@{ methodDef, _ ->
         if (methodDef.name == "<clinit>") {
             var isStringFound = false
 

@@ -5,6 +5,10 @@ import app.revanced.patcher.annotation.Name
 import app.revanced.patcher.annotation.Version
 import app.revanced.patcher.data.BytecodeContext
 import app.revanced.patcher.extensions.*
+import app.revanced.patcher.extensions.InstructionExtensions.addInstructions
+import app.revanced.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
+import app.revanced.patcher.extensions.InstructionExtensions.getInstruction
+import app.revanced.patcher.extensions.InstructionExtensions.removeInstructions
 import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint.Companion.resolve
 import app.revanced.patcher.patch.BytecodePatch
 import app.revanced.patcher.patch.PatchResult
@@ -37,35 +41,41 @@ class JakDojadeAnalyticsPatch : BytecodePatch(
 
     companion object {
         const val IntegrationPatch = "Lapp/revanced/integrations/patches/JakDojadeAnalyticsPatch;"
-        const val TrackerImpl = "Lcom/citynav/jakdojade/pl/android/common/externallibraries/GemiusAudienceImpressionsTracker;"
+        const val TrackerImpl =
+            "Lcom/citynav/jakdojade/pl/android/common/externallibraries/GemiusAudienceImpressionsTracker;"
     }
 
 
     override fun execute(context: BytecodeContext): PatchResult {
         IsUserTrackingEnabledFingerprint.result?.mutableMethod?.run {
             removeInstructions(0, implementation!!.instructions.size - 1)
-            addInstructions("""
+            addInstructions(0,
+                """
                 const/4 v0, 0x0
                 return v0
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         FirebaseRemoteGetValueFingerprint.result?.mutableMethod?.run {
-            addInstructions(0, """
+            addInstructionsWithLabels(
+                0, """
                 invoke-static {p1}, $IntegrationPatch->getValue(Ljava/lang/String;)Ljava/lang/Boolean;
                 move-result-object v0
                 if-eqz v0, :continue_original
                 return-object v0
             """.trimIndent(),
-            listOf(ExternalLabel("continue_original", instruction(0)))
+                ExternalLabel("continue_original", getInstruction(0))
             )
         }
 
         EventSenderSendFingerprint.result?.mutableMethod?.run {
             removeInstructions(0, implementation!!.instructions.size - 1)
-            addInstructions("""
+            addInstructions(
+                """
                 return-void
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         findAndOverrideAnalyticsTracker(context)
@@ -84,7 +94,7 @@ class JakDojadeAnalyticsPatch : BytecodePatch(
         context.findClass find@{ classDef ->
             val methods = classDef.methods.toList()
             if (methods.size != 2) return@find false
-            val method= methods.firstOrNull { it.returnType == iClass } ?: return@find false
+            val method = methods.firstOrNull { it.returnType == iClass } ?: return@find false
             val impl = method.implementation ?: return@find false
             for (instruction in impl.instructions) {
                 if (instruction.opcode == Opcode.NEW_INSTANCE) {
@@ -102,13 +112,15 @@ class JakDojadeAnalyticsPatch : BytecodePatch(
                         .replace("/", ".")
                 }
                 removeInstructions(0, implementation!!.instructions.size - 1)
-                addInstructions("""
+                addInstructions(0,
+                    """
                     const-string v0, "$iClassStr"
                     invoke-static {v0}, $IntegrationPatch->magicProxy(Ljava/lang/String;)Ljava/lang/Object;
                     move-result-object v0
                     check-cast v0, $iClass
                     return-object v0
-                """.trimIndent())
+                """.trimIndent()
+                )
             }
         }
     }

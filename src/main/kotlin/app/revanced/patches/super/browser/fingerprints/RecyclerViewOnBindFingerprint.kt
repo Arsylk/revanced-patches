@@ -9,7 +9,7 @@ import org.jf.dexlib2.iface.instruction.ReferenceInstruction
 import org.jf.dexlib2.iface.reference.TypeReference
 
 object RecyclerViewOnBindFingerprint : MethodFingerprint(
-    customFingerprint = fingerprint@{ methodDef ->
+    customFingerprint = fingerprint@{ methodDef, _ ->
         if (methodDef.accessFlags and AccessFlags.STATIC.value != 0)
             return@fingerprint false
         for (instruction in methodDef.implementation!!.instructions) {

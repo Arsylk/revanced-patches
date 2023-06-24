@@ -6,8 +6,8 @@ import org.jf.dexlib2.AccessFlags
 
 object PremiumManagerConstructorFingerprint : MethodFingerprint(
     returnType = "V",
-    access = AccessFlags.PUBLIC or AccessFlags.CONSTRUCTOR,
-    customFingerprint = customFingerprint@{ methodDef ->
+    accessFlags = AccessFlags.PUBLIC or AccessFlags.CONSTRUCTOR,
+    customFingerprint = customFingerprint@{ methodDef, _ ->
         val firstArg = methodDef.parameterTypes.getOrNull(0)
         if (firstArg != "Lcom/citynav/jakdojade/pl/android/billing/GooglePlayPurchaseManager;") {
             return@customFingerprint false
